@@ -1,6 +1,0 @@
-{
-    "board": "arduino:avr:leonardo",
-    "programmer": "AVRISP mkII",
-    "port": "/dev/cu.usbmodemHIDPC1",
-    "sketch": "pushingButtons.ino"
-}
