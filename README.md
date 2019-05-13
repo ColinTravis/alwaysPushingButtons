@@ -24,6 +24,7 @@ Change `sendKey` variable to change which key is pressed on button push.
 This project was created by:
 
 - [@colintravis](https://github.com/colintravis)
+- [@jeratylke](https://github.com/jeraTylke)
 
 ### Software
 
