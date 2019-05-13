@@ -1,46 +1,53 @@
-/*
-  Input Pull-up Serial
+/*  Title:       Always Pushing Buttons Button Box
+ *  Description: Send keystroke to computer when large button is pushed
+ *  Author:      Colin Travis & Jera Tylke
+ *  Version:     1.5
+ *  Modified:    05/13/2019
+ */
 
-  This example demonstrates the use of pinMode(INPUT_PULLUP). It reads a digital
-  input on pin 2 and prints the results to the Serial Monitor.
+#define DEBUG false
+#include <Bounce2.h>
+#include <Keyboard.h>
 
-  The circuit:
-  - momentary switch attached from pin 2 to ground
-  - built-in LED on pin 13
+#define buttonPin 2 // the pin number of the handle switch
 
-  Unlike pinMode(INPUT), there is no pull-down resistor necessary. An internal
-  20K-ohm resistor is pulled to 5V. This configuration causes the input to read
-  HIGH when the switch is open, and LOW when it is closed.
+int previousButtonState = HIGH;   // for checking the state of a pushButton
+const char sendKey = 'J'; // This is the code sent when the switch is activated
 
-  created 14 Mar 2012
-  by Scott Fitzgerald
+Bounce debouncer = Bounce(); // Instantiate a Bounce object
 
-  This example code is in the public domain.
+// /////////////////////////////////////////////////////////////////////////////
+//                            Setup and Loop                                  //
+// /////////////////////////////////////////////////////////////////////////////
+void setup()
+{
+  pinMode(buttonPin, INPUT_PULLUP);
 
-  http://www.arduino.cc/en/Tutorial/InputPullupSerial
-*/
+  debouncer.attach(buttonPin);
+  debouncer.interval(5); // interval in ms
 
-void setup() {
-  //start serial connection
-  Serial.begin(9600);
-  //configure pin 2 as an input and enable the internal pull-up resistor
-  pinMode(2, INPUT_PULLUP);
-  pinMode(13, OUTPUT);
-
+  if (DEBUG)
+    Serial.begin(9600);
+  if (DEBUG)
+    Serial.println("Serial working.");
 }
 
-void loop() {
-  //read the pushbutton value into a variable
-  int sensorVal = digitalRead(2);
-  //print out the value of the pushbutton
-  Serial.println(sensorVal);
+void loop()
+{
+  // Update the Bounce instance :
+  debouncer.update();
 
-  // Keep in mind the pull-up means the pushbutton's logic is inverted. It goes
-  // HIGH when it's open, and LOW when it's pressed. Turn on pin 13 when the
-  // button's pressed, and off when it's not:
-  if (sensorVal == HIGH) {
-    digitalWrite(13, LOW);
-  } else {
-    digitalWrite(13, HIGH);
+  int buttonState = digitalRead(buttonPin);
+
+  //  int switchValue = debouncer.read();
+  int switchValue = digitalRead(buttonPin);
+  if (buttonState != previousButtonState && buttonState == LOW)
+  {
+    if (DEBUG)
+      Serial.println("Button Pushed ");
+
+     Keyboard.press(sendKey);
   }
+  previousButtonState = buttonState;
+  Keyboard.release(sendKey);
 }
